@@ -1,15 +1,15 @@
 # Instalar OTRS en Debian
 ## Instalar Apache y PostgreSQL
 
-Conectar al servidor mediante ssh
+Conectar al servidor mediante ssh:
 
         $ ssh root@192.168.43.75
 
-Actualizar los repositorios
+Actualizar los repositorios:
 
         $ sudo apt-get update
 
-Instalar Apache2 y PostgreSQL
+Instalar Apache2 y PostgreSQL:
 
         $ sudo apt-get install -y apache2 libapache2-mod-perl2 postgresql
         
@@ -25,7 +25,16 @@ OTRS esta basado en Perl, por lo que se necesita instalar modulos Perl para cubr
     
 ## Crear nuevo usuario para OTRS
 
+Activar los modulos Perl para apache, luego reiniciar servicios de apache:
 
+        # a2enmod perl
+        # systemctl restart apache2
+        
+Verificar que los modulos esten activos:
+
+        apachectl -M | sort
+        
+En la sección de `Loaded Modules` debe existir `perl_module (shared)`
 ## Crear y configurar la Base de Datos
 
 
