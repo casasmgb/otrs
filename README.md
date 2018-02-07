@@ -2,12 +2,19 @@
 ## Instalar Apache y PostgreSQL
 
 Conectar al servidor mediante ssh
+
         $ ssh root@192.168.43.75
+
 Actualizar los repositorios
+
         $ sudo apt-get update
+
 Instalar Apache2 y PostgreSQL
+
         $ sudo apt-get install -y apache2 libapache2-mod-perl2 postgresql
+        
 Verificar si Apache y Postgres estan corriendo en los puertos :80 y :5432
+
         # netstat -plntu
         
 ## Instalar Modulos de Perl
