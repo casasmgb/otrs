@@ -3,7 +3,7 @@
 
 Conectar al servidor mediante ssh:
 
-        $ ssh root@192.168.43.75
+        $ ssh root@192.168.33.14
 
 Actualizar los repositorios:
 
