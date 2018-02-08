@@ -235,7 +235,7 @@ Deve devolver `Daemon stopped` y también `Daemon started`
 
 Para probar el sistema OTRS abra el navegador e ingrese a la dirección:
 
-(http://localhost/otrs/)
+http://localhost/otrs/    ó    http://192.168.33.14/otrs/
 
 Con el usuario: `root@localhost` y contraseña: `root`
 
