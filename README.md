@@ -13,22 +13,22 @@ Instalar Apache2 y PostgreSQL:
 
         $ sudo apt-get install -y apache2 libapache2-mod-perl2 postgresql
         
-Verificar si Apache y Postgres estan corriendo en los puertos :80 y :5432
+Verificar si Apache y Postgres están corriendo en los puertos :80 y :5432
 
         # netstat -plntu
         
-## Instalar Modulos de Perl
+## Instalar módulos de Perl
 
-OTRS esta basado en Perl, por lo que se necesita instalar modulos Perl para cubrir los requerimientos necesarios.
+OTRS esta basado en Perl, por lo que se necesita instalar módulos Perl para cubrir los requerimientos necesarios.
 
         $ sudo apt-get install -y libapache2-mod-perl2 libdbd-pg-perl libnet-dns-perl libnet-ldap-perl libio-socket-ssl-perl libpdf-api2-perl libsoap-lite-perl libgd-text-perl libgd-graph-perl libapache-dbi-perl libarchive-zip-perl libcrypt-eksblowfish-perl libcrypt-ssleay-perl libencode-hanextra-perl libjson-xs-perl libmail-imapclient-perl libtemplate-perl libtemplate-perl libtext-csv-xs-perl libxml-libxml-perl libxml-libxslt-perl libpdf-api2-simple-perl libyaml-libyaml-perl
 
-Activar los modulos Perl para apache, luego reiniciar servicios de apache:
+Activar los módulos Perl para apache, luego reiniciar servicios de apache:
 
         # a2enmod perl
         # systemctl restart apache2
         
-Verificar que los modulos esten activos:
+Verificar que los módulos estén activos:
 
         apachectl -M | sort
         
@@ -36,7 +36,7 @@ En la sección de `Loaded Modules` debe existir `perl_module (shared)`
 
 ## Crear nuevo usuario para OTRS
 
-OTRS es una aplicacion web que corre bajo apache. para mayor seguridad se necesita un usuario normal, no un usuario root.
+OTRS es una aplicación web que corre bajo apache. para mayor seguridad se necesita un usuario normal, no un usuario root.
 
 Crear un usuario llamado 'otrs'
 
@@ -68,7 +68,7 @@ Login con el usuario `postgres` y acceder al shell de PostgreSQL:
         # su - postgres
         $ psql
         
-Crear un nuevo rol llamado 'otrs' con el password 'otrsclave' y la opcion 'nosuperuser':
+Crear un nuevo rol llamado 'otrs' con el password 'otrsclave' y la opción 'nosuperuser':
 
         =# create user otrs password 'otrsclave' nosuperuser;
         
@@ -77,11 +77,11 @@ Crear una base de datos llamada 'otrs' con privilegios del usuario 'otrs':
         =# create database otrs owner otrs;
         =# \q
         
-Editar el archivo de configuracion de PostgreSQL para la autenticacion del rol otrs:
+Editar el archivo de configuración de PostgreSQL para la autenticación del rol otrs:
 
         nano /etc/postgresql/9.6/main/pg_hba.conf
         
-Pegar la siguiente configuracion en el apartado `# Database administrative login by Unix domain socket`
+Pegar la siguiente configuración en el apartado `# Database administrative login by Unix domain socket`
 
         local   otrs            otrs                                    password
         host    otrs            otrs            127.0.0.1/32            password
@@ -93,11 +93,11 @@ Volver con privilegios de root y reiniciar PostgreSQL:
         $ exit
         # systemctl restart postgresql
 
-PostgreSQL esta listo para la instalacion de OTRS.
+PostgreSQL esta listo para la instalación de OTRS.
 
 ## Descargar y configurar OTRS
 
-La version de OTRS que se esta instalando es la version 5.0.16.
+La versión de OTRS que se esta instalando es la 5.0.16.
 
         # cd /opt/
         # wget http://ftp.otrs.org/pub/otrs/otrs-5.0.16.tar.gz
@@ -109,15 +109,15 @@ Extraer los archivos de OTRS, renombrar el directorio y cambiar el dueño de tod
         # mv otrs-5.0.16 otrs
         # chown -R otrs:otrs otrs
         
-Verificar que los modulos para OTRS esten instalados:
+Verificar que los módulos para OTRS estén instalados:
 
         # /opt/otrs/bin/otrs.CheckModules.pl
         
-Es problable que en el listado nos muestren modulos con 'not installed' nos queda instalarlos con el comando `apt-get install -y modulo-que-falta`
+Es probable que en el listado nos muestren módulos con 'not installed' nos queda instalarlos con el comando `apt-get install -y modulo-que-falta`
 
-OTRS esta descargado y el servidor esta listo para la instalacion.
+OTRS esta descargado y el servidor esta listo para la instalación.
 
-Modificar el archivo de configuracion de OTRS:
+Modificar el archivo de configuración de OTRS:
 
         # cd /opt/otrs/
         # cp Kernel/Config.pm.dist Kernel/Config.pm
@@ -129,11 +129,12 @@ Editamos con nano:
 Cambiar el password de la base de datos:
 
         $Self->{DatabasePw} = 'otrsclave';
+
 Comentar el soporte para base de datos MySQL
 
         # $Self->{DatabaseDSN} = "DBI:mysql:database=$Self->{Database};host=$Self->{DatabaseHost};";
         
-Descomentar el soporte para bases de datos PostgreSQL
+Quitar el comentario del soporte para bases de datos PostgreSQL
 
         $Self->{DatabaseDSN} = "DBI:Pg:dbname=$Self->{Database};";
         
@@ -143,7 +144,7 @@ Modificar el archivo apache startup para habilitar soporte a PostgreSQL:
 
         nano scripts/apache2-perl-startup.pl
         
-Descomentar las lineas despues de `# enable this if you use postgresql` quedando de la siguiente manera:
+Quitar el comentario de las lineas después de `# enable this if you use postgresql` quedando de la siguiente manera:
 
         # enable this if you use postgresql
         use DBD::Pg ();
@@ -166,7 +167,7 @@ Login con el usuario 'postgres' y dirigirse al directorio otrs:
         # su - postgres
         $ cd /opt/otrs/
         
-Insertar bases de datos y esquemas  de tablas con el comendo psql como usuario otrs :
+Insertar bases de datos y esquemas  de tablas con el comando psql como usuario otrs :
 
         $ psql -U otrs -W -f scripts/database/otrs-schema.postgresql.sql otrs
         $ psql -U otrs -W -f scripts/database/otrs-initial_insert.postgresql.sql otrs
@@ -176,18 +177,18 @@ Escribir el password `otrsclave` para cada comando.
 
 ## Iniciar OTRS
 
-La base de datos y OTRS estan configurados, queda iniciar OTRS.
+La base de datos y OTRS están configurados, queda iniciar OTRS.
 
 Dar permisos para los archivos y directorios de otrs para el usuario y grupo `www-data`:
 
         # /opt/otrs/bin/otrs.SetPermissions.pl --otrs-user=www-data --web-group=www-data
 
-Habilitar la configuracion otrs apache, creando un enlace simbolico del archivo al directorio virtual host de apache:
+Habilitar la configuración otrs apache, creando un enlace simbólico del archivo al directorio virtual host de apache:
 
         # ln -s /opt/otrs/scripts/apache2-httpd.include.conf /etc/apache2/sites-available/otrs.conf
         
 
-Habilitar otrs virtul host y reiniciar apache:
+Habilitar otrs virtual host y reiniciar apache:
 
         # a2ensite otrs
         # systemctl restart apache2
@@ -212,7 +213,7 @@ Volver a los privilegios de root, e iniciar los cron scripts:
         
 debe devolver `(using /opt/otrs) done`.
 
-Crear manuelmente un cronjob para PostMaster que busque los correos electronicos cada 2 minutos:
+Crear manualmente un cronjob para PostMaster que busque los correos electrónicos cada 2 minutos:
 
         # su - otrs
         $ crontab -e
@@ -228,11 +229,11 @@ Ahora detenemos el Daemon de otrs y lo volvemos a iniciar:
         $ bin/otrs.Daemon.pl stop
         $ bin/otrs.Daemon.pl start
         
-Deve devolver `Daemon stopped` y tambien `Daemon started`
+Deve devolver `Daemon stopped` y también `Daemon started`
 
 ## Probando OTRS
 
-Para probar el sistema OTRS abra el navegador e ingrese a la direccion:
+Para probar el sistema OTRS abra el navegador e ingrese a la dirección:
 
 (http://localhost/otrs/)
 
@@ -246,4 +247,3 @@ Si tiene un error como 'OTRS Daemon no se esta ejecutando' puede habilitar la de
         $ cd /opt/otrs/
         $ bin/otrs.Daemon.pl stop
         $ bin/otrs.Daemon.pl start --debug
-
