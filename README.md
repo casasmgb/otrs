@@ -1,4 +1,4 @@
-# Instalar OTRS en Debian
+# Instalar OTRS 5s en Debian
 ## Instalar Apache y PostgreSQL
 
 Conectar al servidor mediante ssh:
@@ -46,23 +46,204 @@ Crear un usuario llamado 'otrs'
    `-d /opt/otrs` : define el directorio home para el nuevo usuario
    `-c` :  comentario
 
+Agregar el usuario 'otrs' al grupo 'www-data' porque  apache esta corriendo bajo el grupo 'www-data':
+
+        # usermod -a -G www-data otrs
+        
+Verificar que el usuario 'otrs' este habilitado en el archivo `/etc/passwd`
+
+        greep -rin otrs /etc/passwd
+        
+La respuesta debe ser similar a: `35:otrs:x:999:999:OTRS User:/opt/otrs:`
+
+El nuevo usuario esta creado.
+
+
 ## Crear y configurar la Base de Datos
 
+Es necesario crear una nueva base de datos PostgreSQL para el sistema OTRS, y configurarla de modo que este lista.
+
+Login con el usuario `postgres` y acceder al shell de PostgreSQL:
+
+        # su - postgres
+        $ psql
+        
+Crear un nuevo rol llamado 'otrs' con el password 'otrsclave' y la opcion 'nosuperuser':
+
+        =# create user otrs password 'otrsclave' nosuperuser;
+        
+Crear una base de datos llamada 'otrs' con privilegios del usuario 'otrs':
+
+        =# create database otrs owner otrs;
+        =# \q
+        
+Editar el archivo de configuracion de PostgreSQL para la autenticacion del rol otrs:
+
+        nano /etc/postgresql/9.6/main/pg_hba.conf
+        
+Pegar la siguiente configuracion en el apartado `# Database administrative login by Unix domain socket`
+
+        local   otrs            otrs                                    password
+        host    otrs            otrs            127.0.0.1/32            password
+        
+guardar el archivo y salir de nano.
+
+Volver con privilegios de root y reiniciar PostgreSQL:
+
+        $ exit
+        # systemctl restart postgresql
+
+PostgreSQL esta listo para la instalacion de OTRS.
 
 ## Descargar y configurar OTRS
 
-module
+La version de OTRS que se esta instalando es la version 5.0.16.
+
+        # cd /opt/
+        # wget http://ftp.otrs.org/pub/otrs/otrs-5.0.16.tar.gz
+        
+        
+Extraer los archivos de OTRS, renombrar el directorio y cambiar el dueño de todos los archivos del directorio al usuario 'otrs':
+
+        # tar -xzvf otrs-5.0.16.tar.gz
+        # mv otrs-5.0.16 otrs
+        # chown -R otrs:otrs otrs
+        
+Verificar que los modulos para OTRS esten instalados:
+
+        # /opt/otrs/bin/otrs.CheckModules.pl
+        
+Es problable que en el listado nos muestren modulos con 'not installed' nos queda instalarlos con el comando `apt-get install -y modulo-que-falta`
+
+OTRS esta descargado y el servidor esta listo para la instalacion.
+
+Modificar el archivo de configuracion de OTRS:
+
+        # cd /opt/otrs/
+        # cp Kernel/Config.pm.dist Kernel/Config.pm
+        
+Editamos con nano: 
+
+        # nano Kernel/Config.pm
+
+Cambiar el password de la base de datos:
+
+        $Self->{DatabasePw} = 'otrsclave';
+Comentar el soporte para base de datos MySQL
+
+        # $Self->{DatabaseDSN} = "DBI:mysql:database=$Self->{Database};host=$Self->{DatabaseHost};";
+        
+Descomentar el soporte para bases de datos PostgreSQL
+
+        $Self->{DatabaseDSN} = "DBI:Pg:dbname=$Self->{Database};";
+        
+Guardar el archivo y salir de nano.
+
+Modificar el archivo apache startup para habilitar soporte a PostgreSQL:
+
+        nano scripts/apache2-perl-startup.pl
+        
+Descomentar las lineas despues de `# enable this if you use postgresql` quedando de la siguiente manera:
+
+        # enable this if you use postgresql
+        use DBD::Pg ();
+        use Kernel::System::DB::postgresql;
+
+Guardar el archivo y salir de nano.
+
+Finalmente verificar que no exista error en las dependencias:
+
+        perl -cw /opt/otrs/bin/cgi-bin/index.pl
+        perl -cw /opt/otrs/bin/cgi-bin/customer.pl
+        perl -cw /opt/otrs/bin/otrs.Console.pl
+
+Las respuestas a cada script deben devolver `OK`.
+
 ## Importar Base de Datos de ejemplo
 
+Login con el usuario 'postgres' y dirigirse al directorio otrs:
+
+        # su - postgres
+        $ cd /opt/otrs/
+        
+Insertar bases de datos y esquemas  de tablas con el comendo psql como usuario otrs :
+
+        $ psql -U otrs -W -f scripts/database/otrs-schema.postgresql.sql otrs
+        $ psql -U otrs -W -f scripts/database/otrs-initial_insert.postgresql.sql otrs
+        $ psql -U otrs -W -f scripts/database/otrs-schema-post.postgresql.sql otrs
+
+Escribir el password `otrsclave` para cada comando.
 
 ## Iniciar OTRS
 
+La base de datos y OTRS estan configurados, queda iniciar OTRS.
+
+Dar permisos para los archivos y directorios de otrs para el usuario y grupo `www-data`:
+
+        # /opt/otrs/bin/otrs.SetPermissions.pl --otrs-user=www-data --web-group=www-data
+
+Habilitar la configuracion otrs apache, creando un enlace simbolico del archivo al directorio virtual host de apache:
+
+        # ln -s /opt/otrs/scripts/apache2-httpd.include.conf /etc/apache2/sites-available/otrs.conf
+        
+
+Habilitar otrs virtul host y reiniciar apache:
+
+        # a2ensite otrs
+        # systemctl restart apache2
 
 ## Configurar OTRS Cronjob
 
+Login con el usuario 'otrs', luego posicionarse en el directorio 'var/cron':
+
+        # su - otrs
+        $ cd var/cron/
+        $ pwd
+          /opt/otrs/var/cron
+          
+Copiar todos los scripts cronjob.dist:
+
+        $ for foo in *.dist; do cp $foo `basename $foo .dist`; done
+        
+Volver a los privilegios de root, e iniciar los cron scripts:
+
+        $ exit
+        # /opt/otrs/bin/Cron.sh start otrs
+        
+debe devolver `(using /opt/otrs) done`.
+
+Crear manuelmente un cronjob para PostMaster que busque los correos electronicos cada 2 minutos:
+
+        # su - otrs
+        $ crontab -e
+
+Copiar y pegar o siguiente, al final del archivo:
+
+        */2 * * * *    $HOME/bin/otrs.PostMasterMailbox.pl >> /dev/null
+        
+guardar y salir.
+
+Ahora detenemos el Daemon de otrs y lo volvemos a iniciar:
+
+        $ bin/otrs.Daemon.pl stop
+        $ bin/otrs.Daemon.pl start
+        
+Deve devolver `Daemon stopped` y tambien `Daemon started`
 
 ## Probando OTRS
 
+Para probar el sistema OTRS abra el navegador e ingrese a la direccion:
 
-## Iniciar Daemon
+(http://localhost/otrs/)
+
+Con el usuario: `root@localhost` y contraseña: `root`
+
+## Debug OTRS
+
+Si tiene un error como 'OTRS Daemon no se esta ejecutando' puede habilitar la depuracion de Daemon:
+
+        # su - otrs
+        $ cd /opt/otrs/
+        $ bin/otrs.Daemon.pl stop
+        $ bin/otrs.Daemon.pl start --debug
 
