@@ -239,6 +239,8 @@ Para probar el sistema OTRS abra el navegador e ingrese a la dirección:
 
 Con el usuario: `root@localhost` y contraseña: `root`
 
+![otrs 5s](https://www.howtoforge.com/images/how-to-install-otrs-opensource-trouble-ticket-system-on-ubuntu-16-04/big/12.png)
+
 ## Debug OTRS
 
 Si tiene un error como 'OTRS Daemon no se esta ejecutando' puede habilitar la depuracion de Daemon:
