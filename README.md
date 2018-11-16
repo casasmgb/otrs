@@ -1,4 +1,4 @@
-                                                                                                                      by: gcasas
+                                                                                                    by: gcasas
 # Instalar OTRS 5s en Debian
 ## Instalar Apache y PostgreSQL
 
