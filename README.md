@@ -1,3 +1,4 @@
+                                                                                                                      by: gcasas
 # Instalar OTRS 5s en Debian
 ## Instalar Apache y PostgreSQL
 
@@ -249,3 +250,4 @@ Si tiene un error como 'OTRS Daemon no se esta ejecutando' puede habilitar la de
         $ cd /opt/otrs/
         $ bin/otrs.Daemon.pl stop
         $ bin/otrs.Daemon.pl start --debug
+        
