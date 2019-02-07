@@ -218,9 +218,9 @@ Para Administrar app:
   
     $ sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
     
-  o 
+  o en  /opt/tomcat/webapps/host-manager/META-INF/context.xml depende de la version y configuracion
   
-    $ sudo nano {CATALINA_HOME}/webapps/manager/META-INF/context.xml
+    $ sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
 
 y comentar las lineas de ip debe quedar de la siguiente manera:
 
@@ -231,11 +231,6 @@ y comentar las lineas de ip debe quedar de la siguiente manera:
       <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1$
       -->
     </Context>
-    
-    
-Para administrar Host:
-
-    sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
 
 Reiniciar El servicio:
 
