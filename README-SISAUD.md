@@ -209,15 +209,30 @@ editar el archivo tomcat-users.xml
   y configurar un usuario simular a:
   
     <tomcat-users . . .>
-        <role rolename="role1"/>                                                  
-        <role rolename="admin-gui"/>                                              
+        <role rolename="manager-gui"/>
+        <role rolename="admin-gui"/>
         <user username="admin" password="password" roles="manager-gui,admin-gui"/>
     </tomcat-users>
 
 Para Administrar app:
   
     $ sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
+    
+  o 
+  
+    $ sudo nano {CATALINA_HOME}/webapps/manager/META-INF/context.xml
 
+y comentar las lineas de ip debe quedar de la siguiente manera:
+
+    <Context antiResourceLocking="false" privileged="true" >
+    <!--
+      <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+             allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+      <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1$
+      -->
+    </Context>
+    
+    
 Para administrar Host:
 
     sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
