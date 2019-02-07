@@ -1,5 +1,13 @@
                                                                                                     by: gcasas
 # Instalar SISAUD en Debian
+
+Se instalara:
+
+## Java8
+## Tomcat
+## Apache
+## Php
+
 ## Instalar Java8
 Conectar al servidor mediante ssh:
 
@@ -52,8 +60,138 @@ Instalar Java8:
 
   Aceptar la instalacion y los terminos de Java.
   
+Para ver la Version instalada:
+
+    S java -version
+    
+ respuesta:
+ 
+    java version "1.8.0_201"
+    Java(TM) SE Runtime Environment (build 1.8.0_201-b09)
+    Java HotSpot(TM) 64-Bit Server VM (build 25.201-b09, mixed mode)
+
+## Instalar Tomcat
+
+Por seguridad se debe crear un usuario sin privilegios para tomcat pero algunos sistemas operativos predentan una vulnerabilidad que quita privilegios a un usuario creado por adduser, por lo que sebe ejecutar lo siguiente:
+
+    $ sudo apt remove unscd
+
+Primero crearemos un grupo para el usuario tomcat:
+
+    $ sudo groupadd tomcat
+
+Luego creamos el usario tomcat, lo haremos mienbro del grupo tomcat, y le daremos el directorio /opt/tomcat (donde estara instalado Tomcat), y agregaremos /bin/false (nadie podra iniciar session con la cuenta).
+
+    $ sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+  listo...
+
+Ahora a instalar Tomcat, para escoger la version podemos visitar [La pagina de descarga de Tomcat 9](https://tomcat.apache.org/download-90.cgi), debajo de la seccion Binary Distributions -> Core, copiar el link del "tar.gz" de la version que qiere instalar.
+Para descargar cambiar la ruta a /tmp
+
+    $ cd /tmp
+    
+Usaremos curl, si no se tiene instalado instalar con:
+
+    $ sudo apt install curl
+
+Descargar los binarios de la version 8.5:
+    
+    $ curl -O https://www-eu.apache.org/dist/tomcat/tomcat-8/v8.5.37/bin/apache-tomcat-8.5.37.tar.gz
+    
+Instalaremos Tomcat 8.5 en /opt/tomcat. crear la direccion y extraer los archivos:
+
+    $ sudo mkdir /opt/tomcat
+    $ sudo tar xzvf apache-tomcat-8.5.37.tar.gz -C /opt/tomcat --strip-components=1
+
+Se debe cambiar los permisos al usuario tomcat:
+  el usuario tomcat sera propietario d /opt/tomcat
+  dar permisos de escritura al grupo para la carpeta conf
+  dar permisos de ejecucion al grupo para la carpeta conf
+  el usuario tomcat sera dueño de las carpetas: webapps/ work/ temp/ logs/
   
     
+    $ cd /opt/tomcat
+    $ sudo chgrp -R tomcat /opt/tomcat
+    $ sudo chmod -R g+r conf
+    $ sudo chmod g+x conf
+    $ sudo chown -R tomcat webapps/ work/ temp/ logs/
+
+Crear el archivo systemd Service.
+
+debemos conocer cual es el directorio de nuestro JAVA_HOME, podemos usar el comando.
+
+    $ sudo update-java-alternatives -l
+  
+  la respuesta sera: 
+  
+    java-8-oracle                  1081       /usr/lib/jvm/java-8-oracle
+    
+  /usr/lib/jvm/java-8-oracle es la ruta del JAVA_HOME, puede ser diferente.
+  
+Crearemos el archivo tomcat.service:
+
+    $ sudo nano /etc/systemd/system/tomcat.service
+  
+  y pegaremos lo siguiente, reemplazar JAVA_HOME por lo obtenido en el paso anterior:
+  
+    [Unit]
+    Description=Apache Tomcat Web Application Container
+    After=network.target
+
+    [Service]
+    Type=forking
+
+    Environment=JAVA_HOME=/usr/lib/jvm/java-8-oracle
+    Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+    Environment=CATALINA_HOME=/opt/tomcat
+    Environment=CATALINA_BASE=/opt/tomcat
+    Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+    Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+    ExecStart=/opt/tomcat/bin/startup.sh
+    ExecStop=/opt/tomcat/bin/shutdown.sh
+
+    User=tomcat
+    Group=tomcat
+    UMask=0007
+    RestartSec=10
+    Restart=always
+
+    [Install]
+    WantedBy=multi-user.target
+    
+  guardar y cerar nano (se puede usar otro editor) con ctrl+o  y ctrl+x
+  
+Ahora recargaremos el deminio de systemd:
+
+    $ sudo systemctl daemon-reload
+    
+Iniciamos el servidor Tomcat escribiendo:
+  
+    $ sudo systemctl start tomcat 
+    
+Para verificar el estado del servidor:
+
+    $sudo systemctl status tomcat
+    
+    
+  
+ 
+  
+    
+  
+    
+    
+    
+   
+
+
+
+
+## Instalar Apache
+## Instalar Php
+
+
 
 
 
