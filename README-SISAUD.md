@@ -1,5 +1,68 @@
                                                                                                     by: gcasas
-# Instalar OTRS 5s en Debian
+# Instalar SISAUD en Debian
+## Instalar Java8
+Conectar al servidor mediante ssh:
+
+    $ ssh root@192.168.33.14
+
+Actualizar los repositorios:
+
+    $ sudo apt-get update
+        
+Instalar  software-properties-common y dirmngr para instalar java:
+
+    $ sudo apt install software-properties-common
+    $ sudo apt-get install dirmngr
+    
+Agregar los paquetes para la version 8:
+
+    $ sudo add-apt-repository ppa:webupd8team/java
+    
+  precione enter y verifique que las llaves gpg se agregaron correctamente como se ve a continuacion:
+    
+    gpg: keybox '/tmp/tmpmvi_tfzn/pubring.gpg' created             
+    key C2518248EEA14886:                                          
+    14 signatures not checked due to missing keys                  
+    gpg: /tmp/tmpmvi_tfzn/trustdb.gpg: trustdb created             
+    gpg: key C2518248EEA14886: public key "Launchpad VLC" imported 
+    gpg: no ultimately trusted keys found                          
+    gpg: Total number processed: 1                                 
+    gpg:               imported: 1                                 
+    gpg: no valid OpenPGP data found.                              
+
+Agregar la llave a los repositorios:
+    
+    $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886
+  debe responder similar a:
+  
+    Executing: /tmp/apt-key-gpghome.bb1vIJLem4/gpg.1.sh --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886 
+    key C2518248EEA14886:                                                                                             
+    14 signatures not checked due to missing keys                                                                     
+    gpg: key C2518248EEA14886: public key "Launchpad VLC" imported                                                    
+    gpg: Total number processed: 1                                                                                    
+    gpg:               imported: 1                                                                                    
+    
+Actualizar los repositorios:
+    
+    $sudo apt update
+
+Instalar Java8:
+
+    $sudo apt install oracle-java8-installer
+
+  Aceptar la instalacion y los terminos de Java.
+  
+  
+    
+
+
+
+
+
+
+
+
+
 ## Instalar Apache y PostgreSQL
 
 Conectar al servidor mediante ssh:
