@@ -277,7 +277,7 @@ Permitir que el firewall acepte HTTP y HTTPS, usaremos la heramienta ufW
     
     http://your_server_ip 
 
-  [apache](https://i.stack.imgur.com/1NOHl.jpg)
+  ![apache](https://i.stack.imgur.com/1NOHl.jpg)
 
 The WWW profiles are used to manage ports used by web servers:
     
@@ -293,13 +293,64 @@ Available applications:
   
     
   
-## Instalar Php
+## Instalar Php 5
 
+Para instalar PHP usaremos apt:
+    
+    $ sudo apt install php libapache2-mod-php php-mysql
+  
+  Argegamos la extencion .php al servidor apache, moviendo index.php al pincipio
+  
+    $ sudo nano /etc/apache2/mods-enabled/dir.conf
+  
+  debe quedar de la siguiente manera:
+  
+    <IfModule mod_dir.c>
+        DirectoryIndex index.php index.html index.cgi index.pl index.xhtml index.htm
+    </IfModule>
+    
+  guardamos con ctrl+o y ctrl+x
+  
+Reiniciamos el servidor:
 
+    $ sudo systemctl restart apache2
 
+Verificamos el estado del servidor.
+    
+    $ sudo systemctl status apache2
 
+Instalamos alguna extenciones de php
+  
+    $ sudo apt install php-cli php-pdo php-mbstring php-tokenizer php-xml php-ctype php-json php-soap
 
+Probamos si esta instalado con php.info
+  
+    $ sudo nano /var/www/html/info.php
+  
+  y agregar al archivo
+  
+    <?php
+      phpinfo();
+    ?>
 
+guardar y cerrar el archivo.
 
+probar PHP en:
+
+    http://your_server_ip/info.php
+    
+    
+Para instalar y habilitar las funcionalidades que el SISAUD necesita editamos el archivo php.ini
+
+    nano /etc/php/7.0/apache2/php.ini
+
+y descomentamos:
+
+    extension=php_mbstring.dll      
+    extension=php_openssl.dll       
+    extension=php_pdo_odbc.dll      
+    extension=php_openssl.dll
+    extension=php_pdo_odbc.dll
+    extension=php_pdo_pgsql.dll
 
 
