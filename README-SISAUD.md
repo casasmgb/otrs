@@ -52,17 +52,17 @@ Agregar la llave a los repositorios:
     
 Actualizar los repositorios:
     
-    $sudo apt update
+    $ sudo apt update
 
 Instalar Java8:
 
-    $sudo apt install oracle-java8-installer
+    $ sudo apt install oracle-java8-installer
 
   Aceptar la instalacion y los terminos de Java.
   
 Para ver la Version instalada:
 
-    S java -version
+    $ java -version
     
  respuesta:
  
