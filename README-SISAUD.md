@@ -168,23 +168,73 @@ Ahora recargaremos el deminio de systemd:
     
 Iniciamos el servidor Tomcat escribiendo:
   
-    $ sudo systemctl start tomcat 
+    $ sudo systemctl start tomcat
+  
+  se puede usar tambien:
+  
+    $ sudo /opt/tomcat/bin/startup.sh
     
 Para verificar el estado del servidor:
 
     $sudo systemctl status tomcat
     
-    
-  
- 
-  
-    
-  
-    
-    
-    
-   
+Se debe ajustar el firewal para probar el servisor:
 
+  usaremos ufw si no se tiene instalado instalar con:
+  
+    $ sudo apt install ufw
+    
+  y ejecutar el comnado par aconfigurrar el puerto 8080
+  
+    $ sudo ufw allow 8080
+  
+ podremos abrir la pagina principal de tomcat en el servidor en la direccion:
+ 
+    http://server_domain_or_IP:8080
+    
+para detener tomcat usar:
+
+    $ sudo systemctl enable tomcat
+  
+  o
+  
+    $ /opt/tomcat/bin/shutdown.sh
+  
+    
+Configurar Tomcat Web Manage Interfaz.
+editar el archivo tomcat-users.xml
+
+    $ sudo nano /opt/tomcat/conf/tomcat-users.xml
+
+  y configurar un usuario simular a:
+  
+    <tomcat-users . . .>
+        <role rolename="role1"/>                                                  
+        <role rolename="admin-gui"/>                                              
+        <user username="admin" password="password" roles="manager-gui,admin-gui"/>
+    </tomcat-users>
+
+Para Administrar app:
+  
+    $ sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
+
+Para administrar Host:
+
+    sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
+Reiniciar El servicio:
+
+    $ sudo systemctl restart tomcat
+
+ o
+ 
+    $ /opt/tomcat/bin/shutdown.sh
+    $ /opt/tomcat/bin/startup.sh
+    
+Ya esta configurado para uar el servidor y manager en:
+  
+    http://server_domain_or_IP:8080
+![tomcat manager](https://assets.digitalocean.com/articles/tomcat8_1604/manager.png)
 
 
 
