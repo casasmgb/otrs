@@ -394,6 +394,21 @@ Habilitamos el sitio con:
 Reiniciamos el servidor apahe:
 
     $ systemctl restart apache2
+    
+Usaremos composer si no se tiene insatalado segir los pasos acontinuacion.
+
+    $ curl -sS https://getcomposer.org/installer | php
+    $ mv composer.phar /usr/local/bin/composer
+    $ sudo chmod +x /usr/local/bin/composer
+    $ composer 
+    
+       ______
+      / ____/___  ____ ___  ____  ____  ________  _____
+     / /   / __ \/ __ `__ \/ __ \/ __ \/ ___/ _ \/ ___/
+    / /___/ /_/ / / / / / / /_/ / /_/ (__  )  __/ /
+    \____/\____/_/ /_/ /_/ .___/\____/____/\___/_/
+                      /_/
+    Composer version 1.X.X 201X-mm-dd hh:mm:ss
 
 Eliminamos la carpeta vendor y los archivos .lock de composer 
 
