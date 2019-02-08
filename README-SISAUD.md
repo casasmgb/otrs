@@ -291,15 +291,24 @@ Available applications:
   WWW Secure
 . . .
   
-    
-  
-## Instalar Php 5
+## Instalar Php 7.2
 
+Para instalar PHP usaremos apt agregando un repositorio:
+    
+    $ wget -q https://packages.sury.org/php/apt.gpg -O- | sudo apt-key add -
+    $ echo "deb https://packages.sury.org/php/ stretch main" | sudo tee /etc/apt/sources.list.d/php.list
+    $ sudo apt-get install ca-certificates apt-transport-https
+    $ sudo apt-get update
+    
 Para instalar PHP usaremos apt:
     
-    $ sudo apt install php libapache2-mod-php php-mysql
+    $ sudo apt-get install php7.2 
+
+Instalamos alguna extenciones de php
   
-  Argegamos la extencion .php al servidor apache, moviendo index.php al pincipio
+    $ sudo apt install php7.2-cli php7.2-pdo php7.2-mbstring php7.2-tokenizer php7.2-xml php7.2-ctype php7.2-json php7.2-soap
+    
+Argegamos la extencion .php al servidor apache, moviendo index.php al pincipio
   
     $ sudo nano /etc/apache2/mods-enabled/dir.conf
   
@@ -319,10 +328,6 @@ Verificamos el estado del servidor.
     
     $ sudo systemctl status apache2
 
-Instalamos alguna extenciones de php
-  
-    $ sudo apt install php-cli php-pdo php-mbstring php-tokenizer php-xml php-ctype php-json php-soap
-
 Probamos si esta instalado con php.info
   
     $ sudo nano /var/www/html/info.php
@@ -339,18 +344,5 @@ probar PHP en:
 
     http://your_server_ip/info.php
     
-    
-Para instalar y habilitar las funcionalidades que el SISAUD necesita editamos el archivo php.ini
-
-    nano /etc/php/7.0/apache2/php.ini
-
-y descomentamos:
-
-    extension=php_mbstring.dll      
-    extension=php_openssl.dll       
-    extension=php_pdo_odbc.dll      
-    extension=php_openssl.dll
-    extension=php_pdo_odbc.dll
-    extension=php_pdo_pgsql.dll
 
 
