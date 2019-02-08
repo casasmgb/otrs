@@ -383,6 +383,14 @@ Reiniciamos el servidor apahe:
 
     $ systemctl restart apache2
 
+Eliminamos la carpeta vendor y los archivos .lock de composer 
+
+    $ sudo rm -rf composer.lock vendor
+    
+y reinstalamos las dependencias:
+
+    $ composer install
+    
 la pagina aparecera en el navegador con la IP del equipo
 
     http://your_server_ip/
