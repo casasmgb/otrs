@@ -306,7 +306,19 @@ Para instalar PHP usaremos apt:
 
 Instalamos alguna extenciones de php
   
-    $ sudo apt install php7.2-cli php7.2-pdo php7.2-mbstring php7.2-tokenizer php7.2-xml php7.2-ctype php7.2-json php7.2-soap
+    $ sudo apt install php7.2-cli php7.2-pdo php7.2-mbstring php7.2-tokenizer php7.2-xml php7.2-ctype php7.2-json php7.2-soap libargon2-0 libsodium23 libssl1.1 php7.2-cli php7.2-opcache php7.2-readline
+    
+Definimos a php7.2
+
+    $ update-alternatives --set php /usr/bin/php7.2
+    
+Habilitamos php7.2 para apache
+
+    $ a2enmod php7.2
+    
+Reiniciamos apache2
+
+    $ systemctl restart apache2
     
 Argegamos la extencion .php al servidor apache, moviendo index.php al pincipio
   
