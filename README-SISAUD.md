@@ -344,5 +344,48 @@ probar PHP en:
 
     http://your_server_ip/info.php
     
+## Configuracion para la aplicacion SISAUD
+
+Copiar el proyecto en la ruta /var/www/html/SISTEMA_WEB
+
+### Crear un virtual host para la aplicacion.
+
+Damos permiso www-data a la carpeta /varwww/html
+
+    $ chown -R www-data: /var/www/html
+    
+Creamos el archivo para la configuracion del virtualhost
+
+    $ nano /etc/apache2/sites-available/sisaud.bo.conf
+    
+y en el pegamos lo siguiente:
+    
+    <VirtualHost *:80>                                                  
+                                                                    
+        DocumentRoot "/var/www/html/SISTEMA_WEB/public"                    
+        ServerName 172.16.70.157                                    
+        <Directory "/var/www/html/SISTEMA_WEB/public">                     
+           AllowOverride  all                                       
+           Order allow,deny                                         
+           Allow from all                                           
+        </Directory>                                                
+                                                                    
+        ErrorLog ${APACHE_LOG_DIR}/sisaud.bo_error.log              
+        CustomLog ${APACHE_LOG_DIR}/sisaud.bo_access.log combined   
+                                                                    
+    </VirtualHost>                                                      
+
+Habilitamos el sitio con:
+
+    $ a2ensite sisaud.bo.conf
+    
+Reiniciamos el servidor apahe:
+
+    $ systemctl restart apache2
+
+la pagina aparecera en el navegador con la IP del equipo
+
+    http://your_server_ip/
+
 
 
