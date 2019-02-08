@@ -302,7 +302,7 @@ Para instalar PHP usaremos apt agregando un repositorio:
     
 Para instalar PHP usaremos apt:
     
-    $ sudo apt-get install php7.2 
+    $ sudo apt-get install php7.2 libapache2-mod-php7.2
 
 Instalamos alguna extenciones de php
   
