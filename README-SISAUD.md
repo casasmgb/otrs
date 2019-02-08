@@ -312,9 +312,10 @@ Definimos a php7.2
 
     $ update-alternatives --set php /usr/bin/php7.2
     
-Habilitamos php7.2 para apache
+Habilitamos php7.2 para apache y habilitamos el modulo rewrite
 
-    $ a2enmod php7.2
+    $ sudo a2enmod php7.2
+    $ sudo a2enmod rewrite
     
 Reiniciamos apache2
 
